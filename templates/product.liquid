@@ -39,7 +39,7 @@
       </p>
 
       <form action="/cart/add" method="post" role="form">
-        <select id="product-variants" name="id">
+        <select id="product-select" name="id">
           {% for variant in product.variants %}
             {% if variant.available == true %}
               <option value="{{ variant.id }}">{{ variant.title }} - {{ variant.price | money }}</option>
@@ -53,3 +53,19 @@
     </div>
   </div>
 </section>
+
+<script>
+  jQuery(function($) {
+
+    var selectCallback = function() {
+
+    };
+
+    new Shopify.OptionSelectors('product-select', {
+      product: {{ product | json }},
+      onVariantSelected: selectCallback,
+      enableHistoryState: true
+    });
+
+  });
+</script>
