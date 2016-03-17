@@ -20,14 +20,15 @@
 <section id="product">
   <div class="row">
     <div class="col-sm-3">
-      <img src="{{ product.featured_image | product_img_url: 'grande' }}" class="img-responsive" alt="{{ product.title }}" />
+      {% assign featured_image = current_variant.featured_image | default: product.featured_image %}
+      <img src="{{ featured_image | product_img_url: 'large' }}" class="img-responsive" alt="{{ featured_image.alt | escape }}" />
     </div>
 
     <div class="col-sm-9">
       <div class="row">
         {% for image in product.images %}
           <div class="col-sm-3">
-            <a href="{{ image.src | img_url: 'grande' }}">
+            <a href="{{ image.src | img_url: 'large' }}">
               <img src="{{ image.src | img_url: 'compact' }}" alt="{{ image.alt | escape }}">
             </a>
           </div>
