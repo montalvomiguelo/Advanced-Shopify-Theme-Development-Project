@@ -38,6 +38,15 @@
       </p>
 
       <form action="/cart/add" method="post" role="form">
+        <select id="product-variants" name="id">
+          {% for variant in product.variants %}
+            {% if variant.available == true %}
+              <option value="{{ variant.id }}">{{ variant.title }} - {{ variant.price | money }}</option>
+            {% else %}
+              <option disabled="disabled">{{ variant.title }} - sold out!</option>
+            {% endif %}
+          {% endfor %}
+        </select>
         <input type="hidden" name="id" value="{{ product.variants.first.id }}" />
         <button type="submit" class="button">Add to cart</button>
       </form>
