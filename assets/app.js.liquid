@@ -28,4 +28,11 @@ var switchImage = function(src, imgObject, el) {
   // You can add your own Javascript here.
   //
 
+  // Update main product image when a thumbnail is clicked
+  $('#product-thumbnails').on('click', 'a', function(evt) {
+    evt.preventDefault();
+    var newImage = $(this).attr('href');
+    switchImage(newImage, null, $('#product-image')[0]);
+  });
+
 })(jQuery);
