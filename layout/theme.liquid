@@ -22,7 +22,9 @@
         <div class="col-md-6">
           <ul class="navbar-main-menu">
             {% for collection in collections %}
+              {% unless collection.handle == 'frontpage' %}
               <li><a href="{{ collection.url }}">{{ collection.title | escape }}</a></li>
+              {% endunless %}
             {% endfor %}
           </ul>
         </div>
