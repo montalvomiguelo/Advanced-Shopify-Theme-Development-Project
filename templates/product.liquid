@@ -2,6 +2,17 @@
   <div class="row">
     <div class="col-sm-6">
       <h1>{{ product.title | escape }}</h1>
+      {% comment %}
+        Get first variant
+      {% endcomment %}
+      {% assign current_variant = product.selected_or_first_available_variant %}
+      <p id="product-price" class="product-price">
+        {% if product.compare_at_price > product.price %}
+          {{ current_variant.price | money }} <s>{{ current_variant.compare_at_price | money }}</s>
+        {% else %}
+          {{ current_variant.price | money }}
+        {% endif %}
+      </p>
     </div>
   </div>
 </header>
