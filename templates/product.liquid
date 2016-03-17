@@ -8,11 +8,20 @@
 
 <section id="product">
   <div class="row">
-    <div class="col-md-3">
+    <div class="col-sm-3">
       <img src="{{ product.featured_image | product_img_url: 'grande' }}" class="img-responsive" alt="{{ product.title }}" />
     </div>
 
-    <div class="col-md-9">
+    <div class="col-sm-9">
+      <div class="row">
+        {% for image in product.images %}
+          <div class="col-sm-3">
+            <a href="{{ image.src | img_url: 'grande' }}">
+              <img src="{{ image.src | img_url: 'compact' }}" alt="{{ image.alt | escape }}">
+            </a>
+          </div>
+        {% endfor %}
+      </div>
       <p>
         {{ product.description }}
       </p>
