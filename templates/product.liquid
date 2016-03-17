@@ -21,7 +21,7 @@
   <div class="row">
     <div class="col-sm-3">
       {% assign featured_image = current_variant.featured_image | default: product.featured_image %}
-      <img src="{{ featured_image | product_img_url: 'large' }}" class="img-responsive" alt="{{ featured_image.alt | escape }}" />
+      <img src="{{ featured_image | product_img_url: 'large' }}" class="img-responsive" id="product-image" alt="{{ featured_image.alt | escape }}" />
     </div>
 
     <div class="col-sm-9">
@@ -48,7 +48,7 @@
             {% endif %}
           {% endfor %}
         </select>
-        <button type="submit" class="button">Add to cart</button>
+        <button type="submit" id="add" class="button">Add to cart</button>
       </form>
     </div>
   </div>
@@ -57,7 +57,37 @@
 <script>
   jQuery(function($) {
 
-    var selectCallback = function() {
+    var selectCallback = function(variant, selector) {
+
+      if (variant) {
+
+        if (variant.available) {
+          // Available, enable the submit button, change text
+          $('#add').removeClass('disabled').prop('disabled', false).text('Add to cart');
+        } else {
+          // Sold out, disable the submit button, change text
+          $('#add').addClass('disabled').prop('disabled', true).text('Sold out');
+        }
+
+        // Regardless of stock, update the product price and compare at price
+        if (variant.compare_at_price > variant.price) {
+          $('#product-price').html( Shopify.formatMoney(variant.price, "{{ shop.money_format }}") + '&nbsp; <s>' + Shopify.formatMoney(variant.compare_at_price, "{{ shop.money_format }}") + '</s>' );
+        } else {
+          $('#product-price').html( Shopify.formatMoney(variant.price, "{{ shop.money_format}}") );
+        }
+
+        // Update variant image, if one is set
+        if (variant.featured_image) {
+          var newImg = variant.featured_image;
+          var el = $('#product-image')[0];
+          Shopify.Image.switchImage(newImg, el, switchImage);
+        }
+
+      } else {
+        // Variant doesn't exist, disable submit button, change text
+        $('#product-price').empty();
+        jQuery('#add').addClass('disabled').prop('disabled', true).text('Unavailable');
+      }
 
     };
 
