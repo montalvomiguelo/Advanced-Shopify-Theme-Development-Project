@@ -97,5 +97,10 @@
       enableHistoryState: true
     });
 
+    // Add label if only one product option
+    {% if product.options.size == 1 %}
+      $('.selector-wrapper').prepend('<label for="product-select-option-0">{{ product.options.first | escape }}</label');
+    {% endif %}
+
   });
 </script>
