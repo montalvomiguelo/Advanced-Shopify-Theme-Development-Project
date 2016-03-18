@@ -35,4 +35,21 @@ var switchImage = function(src, imgObject, el) {
     switchImage(newImage, null, $('#product-image')[0]);
   });
 
+  // Create an event listener to set a specific variant option when clickinc on swatches
+  $('.swatch-wrapper').on('click', '.swatch', function(evt) {
+    evt.preventDefault();
+
+    if ($(this).hasClass('available')) {
+      var optionIndex = $(this).data('change-option');
+      var optionValue = $(this).data('change-value');
+      var $optionSelector = $(this).closest('form').find('.single-option-selector').eq(optionIndex);
+
+      if ($optionSelector.val() != optionValue) {
+        $optionSelector.val(optionValue).trigger('change');
+      }
+
+    }
+
+  });
+
 })(jQuery);

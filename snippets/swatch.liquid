@@ -1,0 +1,43 @@
+{% assign is_color = false %}
+{% for option in product.options %}
+  {% if option == swatch %}
+    {% assign option_index = forloop.index0 %}
+    <style>
+      label[for="product-select-option-{{ option_index }}"] { display: none; }
+      #product-select-option-{{ option_index }} { display: none; }
+      #product-select-option-{{ option_index }} + .custom-style-select-box { display: none !important; }
+    </style>
+    <script>
+      $(window).load(function() { $('.selector-wrapper:eq({{ option_index }})').hide(); });
+    </script>
+    {% assign downcased_option = swatch | downcase %}
+    {% if downcased_option contains 'color' or downcased_option contains 'colour' %}
+      {% assign is_color = true %}
+    {% endif %}
+  {% endif %}
+{% endfor %}
+
+<div class="swatch-wrapper clearfix">
+  <div class="header">{{ swatch }}</div>
+  {% assign values = '' %}
+  {% for variant in product.variants %}
+    {% assign value = variant.options[option_index] %}
+    {% unless values contains value %}
+      {% if is_color %}
+        <a href="{{ variant.url }}" class="swatch swatch-color {% if variant.available %}available{% else %}soldout{% endif %}" style="background: {{ value | handleize }};" data-change-option="{{ option_index }}" data-change-value="{{ value | escape }}" title="{{ value | escape }}">{{ value | escape }}</a>
+      {% else %}
+        <a href="{{ variant.url }}" class="swatch {% if variant.available %}available{% else %}soldout{% endif %}" data-change-option="{{ option_index }}" data-change-value="{{ value | escape }}">{{ value | escape }}</a>
+      {% endif %}
+      {% assign values = values | join: ',' %}
+      {% assign values = values | append: ',' | append: value %}
+      {% assign values = values | split: ',' %}
+    {% endunless %}
+    {% if variant.available %}
+    <script>
+      // Remove soldout class, add available class to swatches when available
+      var $swatch = jQuery('.swatch[data-change-option="{{ option_index }}"]').filter('[data-change-value="{{ value | escape }}"]');
+      $swatch.removeClass('soldout').addClass('available');
+    </script>
+    {% endif %}
+  {% endfor %}
+</div>
