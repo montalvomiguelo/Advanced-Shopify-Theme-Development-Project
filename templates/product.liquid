@@ -63,20 +63,36 @@
 
     var selectCallback = function(variant, selector) {
 
+      // BEGIN SWATCHES
+      /*
       if (variant) {
-
-        // BEGIN SWATCHES
-        if (variant) {
-          var form = jQuery('#' + selector.domIdPrefix).closest('form');
-          var length=variant.options.length;
-          for (var i = 0; i < length; i++) {
-            // Add 'selected' class to selected swatch
-            var $swatch = form.find('.swatch[data-change-option="' + i + '"]').filter('[data-change-value="' + variant.options[i] +'"]');
-            $swatch.siblings().removeClass('selected');
+        var form = jQuery('#' + selector.domIdPrefix).closest('form');
+        var length = variant.options.length;
+        for (var i = 0; i < length; i++) {
+          // Add 'selected' class to selected swatch
+          var $swatch = form.find('.swatch[data-change-option="' + i + '"]').filter('[data-change-value="' + variant.options[i] +'"]');
+          if ($swatch.length) {
+            alert($swatch.text() + ' selected');
+            // $swatch.siblings().removeClass('selected');
             $swatch.addClass('selected');
           }
         }
-        // END SWATCHES
+      }
+      */
+      var form = jQuery('#' + selector.domIdPrefix).closest('form');
+      var selectedValues = selector.selectedValues();
+      var length = selectedValues.length;
+      for (var i = 0; i < length; i++) {
+        // Add 'selected' class to selected swatch
+        var $swatch = form.find('.swatch[data-change-option="' + i + '"]').filter('[data-change-value="' + selectedValues[i] +'"]');
+        if ($swatch.length) {
+          $swatch.siblings().removeClass('selected');
+          $swatch.addClass('selected');
+        }
+      }
+      // END SWATCHES
+
+      if (variant) {
 
         if (variant.available) {
           // Available, enable the submit button, change text
