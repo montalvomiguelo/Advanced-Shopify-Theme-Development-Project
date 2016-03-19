@@ -64,21 +64,6 @@
     var selectCallback = function(variant, selector) {
 
       // BEGIN SWATCHES
-      /*
-      if (variant) {
-        var form = jQuery('#' + selector.domIdPrefix).closest('form');
-        var length = variant.options.length;
-        for (var i = 0; i < length; i++) {
-          // Add 'selected' class to selected swatch
-          var $swatch = form.find('.swatch[data-change-option="' + i + '"]').filter('[data-change-value="' + variant.options[i] +'"]');
-          if ($swatch.length) {
-            alert($swatch.text() + ' selected');
-            // $swatch.siblings().removeClass('selected');
-            $swatch.addClass('selected');
-          }
-        }
-      }
-      */
       var form = jQuery('#' + selector.domIdPrefix).closest('form');
       var selectedValues = selector.selectedValues();
       var length = selectedValues.length;
@@ -130,10 +115,15 @@
       enableHistoryState: true
     });
 
-    // Add label if only one product option
-    {% if product.options.size == 1 %}
-      $('.selector-wrapper').prepend('<label for="product-select-option-0">{{ product.options.first | escape }}</label');
-    {% endif %}
+  // Add label if only one product option and it isn't 'Title'.
+  {% if product.options.size == 1 and product.options.first != 'Title' %}
+    $('.selector-wrapper:eq(0)').prepend('<label>{{ product.options.first }}</label>');
+  {% endif %}
+
+  // Hide selectors if we only have 1 variant and its title contains 'Default'.
+  {% if product.variants.size == 1 and product.variants.first.title contains 'Default' %}
+    $('.selector-wrapper').hide();
+  {% endif %}
 
   });
 </script>
