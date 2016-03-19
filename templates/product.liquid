@@ -25,15 +25,17 @@
     </div>
 
     <div class="col-sm-9 col-md-7">
-      <div id="product-thumbnails" class="row">
-        {% for image in product.images %}
-          <div class="col-sm-3">
-            <a href="{{ image.src | img_url: 'large' }}">
-              <img class="img-responsive" src="{{ image.src | img_url: 'compact' }}" alt="{{ image.alt | escape }}">
-            </a>
-          </div>
-        {% endfor %}
-      </div>
+      {% if product.images.size > 1 %}
+        <div id="product-thumbnails" class="row">
+          {% for image in product.images %}
+            <div class="col-sm-3">
+              <a href="{{ image.src | img_url: 'large' }}">
+                <img class="img-responsive" src="{{ image.src | img_url: 'compact' }}" alt="{{ image.alt | escape }}">
+              </a>
+            </div>
+          {% endfor %}
+        </div>
+      {% endif %}
       <p>
         {{ product.description }}
       </p>
