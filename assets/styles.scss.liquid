@@ -140,6 +140,13 @@ hr {
 // Layout.
 //
 
+/* Override Bootstrap's default container.*/
+@media (min-width: 1200px) {
+  .container {
+    width: 970px;
+  }
+}
+
 .row-space {
   margin-bottom: 30px;
 }
@@ -567,7 +574,7 @@ address {
 }
 
 #navbar-top {
-  padding: 15px 30px;
+  padding: $phi*1rem 0;
 
   font-size: 36px;
   line-height: 48px;
@@ -585,18 +592,24 @@ address {
 }
 
 .navbar-main-menu {
-
-  margin: 0;
-  padding: 15px;
+  margin: 0 0 $phi*1em 0;
+  padding: 0;
+  text-align: center;
+  @media (min-width: 768px) {
+    text-align: left;
+  }
 
   li {
     margin: 0;
     padding: 0;
     display: inline-block;
+    line-height: $phi;
+
+    & + li {
+      margin-left: ($phi / 2)*1em;
+    }
 
     a {
-      padding: 15px;
-
       color: $navbar-menu-color;
       letter-spacing: 0.6px;
       text-transform: uppercase;
@@ -608,12 +621,14 @@ address {
     }
   }
 
-  &.right-aligned {
-    text-align: right;
-  }
-
 }
 
+.navbar-cart-link {
+  @extend .navbar-main-menu;
+  @media (min-width: 768px) {
+    text-align: right;
+  }
+}
 
 //
 // Collection pages.
