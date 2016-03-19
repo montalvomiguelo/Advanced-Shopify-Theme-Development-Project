@@ -1,4 +1,6 @@
 {% assign is_color = false %}
+{% assign option_index = 0 %}
+
 {% for option in product.options %}
   {% if option == swatch %}
     {% assign option_index = forloop.index0 %}
