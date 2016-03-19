@@ -21,8 +21,13 @@ $navbar-menu-hover-color: #ffffff;
 $button-bg-color: #006eff;
 $button-color: #ffffff;
 
+$swatch-color: #EEEEEE;
+$text-color: #333333;
+
 $font-family-headings: "Unica One", "HelveticaNeue", "Helvetica Neue", sans-serif;
 $font-family-body: "Karla", "HelveticaNeue", "Helvetica Neue", sans-serif;
+
+$phi: 1.618;
 
 //
 // Scaffolding
@@ -686,6 +691,55 @@ address {
 //
 // You can add your own SCSS here.
 //
+
+.swatch-wrapper {
+  margin-bottom: $phi * 1em;
+
+  .header {
+    margin-bottom: 10px;
+    line-height: 1.1;
+    font-weight: bold;
+  }
+
+}
+
+.swatch {
+  // override background inline styles
+  background: $swatch-color !important;
+  border: 1px solid $swatch-color;
+  color: $text-color;
+  display: inline-block;
+  padding: ($phi / 4 )*1em ($phi / 2)*1em;
+
+  &:hover,
+  &:focus {
+    color: $text-color;
+    text-decoration: none;
+  }
+
+  &.selected {
+    border-color: $text-color;
+  }
+
+  &.soldout {
+    position: relative;
+    &:before {
+      position: absolute;
+      content: "";
+      left: 50%;
+      top: 0;
+      bottom: 0;
+      border-left: 1px solid;
+      border-color: #1c1d1d;
+      -webkit-transform: rotate(45deg);
+      -moz-transform: rotate(45deg);
+      -ms-transform: rotate(45deg);
+      -o-transform: rotate(45deg);
+      transform: rotate(45deg);
+    }
+  }
+
+}
 
 .no-js {
   .swatch-wrapper {
