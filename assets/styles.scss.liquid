@@ -713,8 +713,21 @@ address {
 // You can add your own SCSS here.
 //
 
+.product-photos {
+  margin-top: $phi*1em;
+  @media (min-width: 768px) {
+    margin-top: 0;
+    margin-bottom: $phi*1em;
+  }
+}
+
+.product-photos-thumb {
+  margin-bottom: $phi*.5em;
+}
+
 .swatch-wrapper {
   margin-bottom: $phi * 1em;
+  text-align: center;
 
   .header {
     margin-bottom: 10px;
@@ -731,6 +744,11 @@ address {
   color: $text-color;
   display: inline-block;
   padding: ($phi / 4 )*1em ($phi / 2)*1em;
+  margin-bottom: ($phi / 2)*1em;
+
+  & ~ .swatch {
+    margin-left: ($phi / 2)*1em;
+  }
 
   &:hover,
   &:focus {
@@ -765,6 +783,13 @@ address {
 .no-js {
   .swatch-wrapper {
     display: none;
+  }
+}
+
+.product-description {
+  margin: $phi*1em 0;
+  @media (min-width: 768px) {
+    margin-top: 0;
   }
 }
 

@@ -1,44 +1,40 @@
 <header id="header">
-  <div class="row">
-    <div class="col-sm-6">
-      <h1>{{ product.title | escape }}</h1>
-      {% comment %}
-        Get first variant
-      {% endcomment %}
-      {% assign current_variant = product.selected_or_first_available_variant %}
-      <p id="product-price" class="product-price">
-        {% if product.compare_at_price > product.price %}
-          {{ current_variant.price | money }} <s>{{ current_variant.compare_at_price | money }}</s>
-        {% else %}
-          {{ current_variant.price | money }}
-        {% endif %}
-      </p>
-    </div>
-  </div>
+    <h1>{{ product.title | escape }}</h1>
+    {% comment %}
+      Get first variant
+    {% endcomment %}
+    {% assign current_variant = product.selected_or_first_available_variant %}
+    <p id="product-price" class="lead">
+      {% if product.compare_at_price > product.price %}
+        {{ current_variant.price | money }} <s>{{ current_variant.compare_at_price | money }}</s>
+      {% else %}
+        {{ current_variant.price | money }}
+      {% endif %}
+    </p>
 </header>
 
 <section id="product">
   <div class="row">
-    <div class="col-sm-3 col-md-5">
+    <div class="col-sm-6 col-md-5">
       {% assign featured_image = current_variant.featured_image | default: product.featured_image %}
-      <img src="{{ featured_image | product_img_url: 'large' }}" class="img-responsive" id="product-image" alt="{{ featured_image.alt | escape }}" />
+      <img src="{{ featured_image | product_img_url: 'grande' }}" class="img-responsive center-block" id="product-image" alt="{{ featured_image.alt | escape }}" />
     </div>
 
-    <div class="col-sm-9 col-md-7">
+    <div class="col-sm-6 col-md-7">
       {% if product.images.size > 1 %}
-        <div id="product-thumbnails" class="row">
+        <div id="product-thumbnails" class="row auto-clear product-photos">
           {% for image in product.images %}
-            <div class="col-sm-3">
-              <a href="{{ image.src | img_url: 'large' }}">
+            <div class="col-xs-3 product-photos-thumb">
+              <a href="{{ image.src | img_url: 'grande' }}">
                 <img class="img-responsive" src="{{ image.src | img_url: 'compact' }}" alt="{{ image.alt | escape }}">
               </a>
             </div>
           {% endfor %}
         </div>
       {% endif %}
-      <p>
+      <div class="product-description rte">
         {{ product.description }}
-      </p>
+      </div>
 
       <form action="/cart/add" method="post" role="form">
         <select id="product-select" name="id">
@@ -54,7 +50,9 @@
           {% endfor %}
         {% endif %}
 
-        <button type="submit" id="add" class="button">Add to cart</button>
+        <p class="text-center">
+          <button type="submit" id="add" class="button">Add to cart</button>
+        </p>
       </form>
     </div>
   </div>
