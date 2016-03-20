@@ -1,0 +1,14 @@
+    {% if collection.all_tags.size > 0 %}
+      <ul class="list-inline subcategories">
+        <li class="{% unless current_tags %}active{% endunless %}">
+          {{ 'All' | link_to_remove_tag: current_tags.first }}
+        </li>
+        {% for tag in collection.all_tags %}
+          {% if current_tags contains tag %}
+            <li class="active">{{ tag | link_to_tag: tag }}</li>
+          {% else %}
+            <li>{{ tag | link_to_tag: tag }}</li>
+          {% endif %}
+        {% endfor %}
+      </ul>
+    {% endif %}

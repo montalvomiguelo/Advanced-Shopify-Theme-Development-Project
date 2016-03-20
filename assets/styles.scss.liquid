@@ -278,6 +278,22 @@ html, body {
   font-size: $phi*.75em;
 }
 
+.subcategories li {
+  line-height: 2.5;
+  a {
+    font-size: ($phi / 2)*1em;
+    padding: .25em .5em;
+    @extend .button;
+    @extend .button-default;
+  }
+  &.active {
+    a {
+      background-color: $button-bg-color;
+      color: $button-color;
+    }
+  }
+}
+
 /* Override Bootstrap's default container.*/
 @media (min-width: 1200px) {
   .container {

@@ -1,25 +1,31 @@
 {% paginate collection.products by 20 %}
 
-  <header id="header">
-    <div class="row">
-      <div class="col-lg-12">
-        <h1>{{ collection.title | escape }}</h1>
+  <form action="{{ collection.url }}">
+
+    <header id="header">
+      <div class="row">
+        <div class="col-lg-12">
+          <h1>{{ collection.title | escape }}</h1>
+          {% include 'subcategories' %}
+        </div>
       </div>
-    </div>
-  </header>
+    </header>
 
-  <section id="collection">
-    <div class="row auto-clear text-center">
-      {% for product in collection.products %}
-        {% include 'product-grid-item' %}
-      {% endfor %}
-    </div>
-  </section>
+    {% include 'collection-controls' with 'grid' %}
 
-  {% if paginate.pages > 1 %}
-  <section id="pagination" class="row text-center">
-    {{ paginate | default_pagination | replace: '&laquo; Previous', '&larr;' | replace: 'Next &raquo;', '&rarr;' }}
-  </section>
-  {% endif %}
+    <section id="collection">
+      <div class="row auto-clear text-center">
+        {% for product in collection.products %}
+          {% include 'product-grid-item' %}
+        {% endfor %}
+      </div>
+    </section>
 
-{% endpaginate %}
+    {% if paginate.pages > 1 %}
+    <section id="pagination" class="row text-center">
+      {{ paginate | default_pagination | replace: '&laquo; Previous', '&larr;' | replace: 'Next &raquo;', '&rarr;' }}
+    </section>
+    {% endif %}
+    {% endpaginate %}
+
+  </form>
