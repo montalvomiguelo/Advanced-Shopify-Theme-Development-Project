@@ -25,6 +25,9 @@ var myShop = (function($) {
     $cartRemove: $('[data-cart-remove]'),
     $cartForm: $('#cart-form'),
 
+    // Collection page
+    $updateCollection: $('[data-update-collection]'),
+
   };
 
   var init = function() {
@@ -32,6 +35,7 @@ var myShop = (function($) {
     cartItemRemove();
     productImageSwitch();
     productSwatchChange();
+    updateCollection();
   };
 
   var switchImage = function(src, imgObject, el) {
@@ -133,6 +137,14 @@ var myShop = (function($) {
     }
     // END SWATCHES
 
+  };
+
+  var updateCollection = function() {
+    if (cache.$updateCollection.length) {
+      cache.$updateCollection.change(function() {
+        $(this).closest('form').submit();
+      });
+    }
   };
 
   return {

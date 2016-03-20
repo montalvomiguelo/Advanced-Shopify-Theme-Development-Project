@@ -194,6 +194,19 @@ html, body {
 // You can add your own SCSS here.
 //
 
+.collection-controls {
+  .button {
+    display: none;
+    .no-js & {
+      display: inline-block;
+    }
+  }
+}
+
+.product-select {
+  margin-bottom: $phi*1em;
+}
+
 .product-photos {
   margin-top: $phi*1em;
   @media (min-width: 768px) {
@@ -214,6 +227,10 @@ html, body {
     margin-bottom: 10px;
     line-height: 1.1;
     font-weight: bold;
+  }
+
+  .no-js & {
+    display: none;
   }
 
 }
@@ -259,12 +276,6 @@ html, body {
     }
   }
 
-}
-
-.no-js {
-  .swatch-wrapper {
-    display: none;
-  }
 }
 
 .product-description {
