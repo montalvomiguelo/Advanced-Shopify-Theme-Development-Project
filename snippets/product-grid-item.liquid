@@ -1,0 +1,26 @@
+{% comment %}
+  Is this product on sale?
+{% endcomment %}
+{% assign on_sale = false %}
+
+{% if product.compare_at_price > product.price %}
+  {% assign on_sale = true %}
+{% endif %}
+
+  <div class="col-xs-6 col-sm-4 col-md-3 col-lg-3">
+    <div class="product">
+      <a href="{{ product.url }}" class="product-image-wrapper">
+        <img src="{{ product.featured_image | product_img_url: 'large' }}" class="img-responsive" />
+      </a>
+        <h4>
+          <a href="{{ product.url }}">{{ product.title }}</a>
+        </h4>
+        <p class="product-price">
+          {% if product.price_varies %}From{% endif %}
+          {{ product.price | money }}
+          {% if on_sale %}
+            <s>{{ product.compare_at_price | money }}</s>
+          {% endif %}
+        </p>
+    </div>
+  </div>

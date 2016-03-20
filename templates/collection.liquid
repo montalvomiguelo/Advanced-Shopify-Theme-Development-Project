@@ -11,16 +11,7 @@
   <section id="collection">
     <div class="row auto-clear text-center">
       {% for product in collection.products %}
-        <div class="col-xs-6 col-sm-4 col-md-3 col-lg-3">
-          <div class="product">
-            <a href="{{ product.url }}" class="product-image-wrapper">
-              <img src="{{ product.featured_image | product_img_url: 'large' }}" class="img-responsive" />
-            </a>
-            <a href="{{ product.url }}">
-              <h4>{{ product.title }}</h4>
-            </a>
-          </div>
-        </div>
+        {% include 'product-grid-item' %}
       {% endfor %}
     </div>
   </section>
