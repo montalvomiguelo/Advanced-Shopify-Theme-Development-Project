@@ -26,7 +26,7 @@
           {% for image in product.images %}
             <div class="col-xs-3 product-photos-thumb">
               <a href="{{ image.src | img_url: 'grande' }}">
-                <img class="img-responsive" src="{{ image.src | img_url: 'compact' }}" alt="{{ image.alt | escape }}">
+                <img class="img-responsive center-block" src="{{ image.src | img_url: 'compact' }}" alt="{{ image.alt | escape }}">
               </a>
             </div>
           {% endfor %}
