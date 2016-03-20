@@ -1,10 +1,3 @@
-// Update main product image
-var switchImage = function(src, imgObject, el) {
-  // Make sure element is a jquery object
-  var $el = $(el);
-  $el.attr('src', src);
-};
-
 /**
  * app.js.liquid
  *
@@ -13,43 +6,141 @@ var switchImage = function(src, imgObject, el) {
  *
  * https://www.skillshare.com/classes/technology/Advanced-Shopify-Theme-Development/708093439/project-guide
  */
-(function($) {
 
-  // Remove the JS class on the body.
-  $('body').removeClass('no-js');
+var myShop = (function($) {
+  'use strict';
 
-  // Handle a click on a "remove" button on the cart page.
-  $('[data-cart-remove]').click(function(e) {
-    $('#updates-item-' + $(this).data('cartRemove')).val(0);
-    $('#cart-form').submit();
-  });
+  var cache = {
+    // General
+    $body: $('body'),
 
-  //
-  // You can add your own Javascript here.
-  //
+    // Product page
+    $productThumbnails: $('#product-thumbnails'),
+    $productImage: $('#product-image'),
+    $swatchWapper: $('.swatch-wrapper'),
+    $add: $('#add'),
+    $productPrice: $('#product-price'),
 
-  // Update main product image when a thumbnail is clicked
-  $('#product-thumbnails').on('click', 'a', function(evt) {
-    evt.preventDefault();
-    var newImage = $(this).attr('href');
-    switchImage(newImage, null, $('#product-image')[0]);
-  });
+    // Cart page
+    $cartRemove: $('[data-cart-remove]'),
+    $cartForm: $('#cart-form'),
 
-  // Create an event listener to set a specific variant option when clickinc on swatches
-  $('.swatch-wrapper').on('click', '.swatch', function(evt) {
-    evt.preventDefault();
+  };
 
-    if ($(this).hasClass('available')) {
-      var optionIndex = $(this).data('change-option');
-      var optionValue = $(this).data('change-value');
-      var $optionSelector = $(this).closest('form').find('.single-option-selector').eq(optionIndex);
+  var init = function() {
+    removeBodyclass();
+    cartItemRemove();
+    productImageSwitch();
+    productSwatchChange();
+  };
 
-      if ($optionSelector.val() != optionValue) {
-        $optionSelector.val(optionValue).trigger('change');
+  var switchImage = function(src, imgObject, el) {
+    // Make sure element is a jquery object
+    var $el = $(el);
+    $el.attr('src', src);
+  };
+
+  var removeBodyclass = function() {
+    cache.$body.removeClass('no-js');
+  };
+
+  var cartItemRemove = function() {
+    if (cache.$cartRemove.length) {
+      cache.$cartRemove.click(function(e) {
+        $('#updates-item-' + $(this).data('cartRemove')).val(0);
+        cache.$cartForm.submit();
+      });
+    }
+  };
+
+  var productImageSwitch = function() {
+    if (cache.$productThumbnails.length) {
+      cache.$productThumbnails.on('click', 'a', function(evt) {
+        evt.preventDefault();
+        var newImage = $(this).attr('href');
+        myShop.switchImage(newImage, null, cache.$productImage);
+      });
+    }
+  };
+
+  var productSwatchChange = function() {
+    if (cache.$swatchWapper.length) {
+      cache.$swatchWapper.on('click', '.swatch', function(evt) {
+        evt.preventDefault();
+
+        if ($(this).hasClass('available')) {
+          var optionIndex = $(this).data('change-option');
+          var optionValue = $(this).data('change-value');
+          var $optionSelector = $(this).closest('form').find('.single-option-selector').eq(optionIndex);
+
+          if ($optionSelector.val() != optionValue) {
+            $optionSelector.val(optionValue).trigger('change');
+          }
+
+        }
+
+      });
+    }
+  };
+
+  var productPage = function(options) {
+
+    var moneyFormat = options.money_format;
+    var variant = options.variant;
+    var selector = options.selector;
+
+
+    if (variant) {
+
+      if (variant.available) {
+        // Available, enable the submit button, change text
+        cache.$add.removeClass('disabled').prop('disabled', false).text('Add to cart');
+      } else {
+        // Sold out, disable the submit button, change text
+        cache.$add.addClass('disabled').prop('disabled', true).text('Sold out');
       }
 
+      // Regardless of stock, update the product price and compare at price
+      if (variant.compare_at_price > variant.price) {
+        cache.$productPrice.html( Shopify.formatMoney(variant.price, moneyFormat) + '&nbsp; <s>' + Shopify.formatMoney(variant.compare_at_price, moneyFormat) + '</s>' );
+      } else {
+        cache.$productPrice.html( Shopify.formatMoney(variant.price, moneyFormat) );
+      }
+
+      // Update variant image, if one is set
+      if (variant.featured_image) {
+        var newImg = variant.featured_image;
+        var el = cache.$productImage[0];
+        Shopify.Image.switchImage(newImg, el, myShop.switchImage);
+      }
+
+    } else {
+      // Variant doesn't exist, disable submit button, change text
+      cache.$add.addClass('disabled').prop('disabled', true).text('Unavailable');
     }
 
-  });
+    // BEGIN SWATCHES
+    var $form = jQuery('#' + selector.domIdPrefix).closest('form');
+    var selectedValues = selector.selectedValues();
+    var length = selectedValues.length;
+    for (var i = 0; i < length; i++) {
+      // Add 'selected' class to selected swatch
+      var $swatch = $form.find('.swatch[data-change-option="' + i + '"]').filter('[data-change-value="' + selectedValues[i] +'"]');
+      if ($swatch.length) {
+        $swatch.siblings().removeClass('selected');
+        $swatch.addClass('selected');
+      }
+    }
+    // END SWATCHES
+
+  };
+
+  return {
+    init: init,
+    switchImage: switchImage,
+    productPage: productPage
+  };
 
 })(jQuery);
+
+jQuery(myShop.init);
