@@ -60,7 +60,17 @@ html, body {
 }
 
 #pagination {
-  margin: 30px 0;
+  margin: $phi*2em 0;
+  > span {
+    display: inline-block;
+  }
+  a {
+    display: block;
+  }
+  a,
+  .page.current {
+    padding: ($phi / 3)*1em;
+  }
 }
 
 
@@ -171,12 +181,11 @@ html, body {
 //
 
 .product {
-
+  margin-bottom: $phi*1em;
 }
 
 .product-image-wrapper {
   display: block;
-  height: 240px;
   overflow: hidden;
 }
 
