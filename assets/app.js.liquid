@@ -189,7 +189,7 @@ var myShop = (function($) {
 
   };
 
-  var addItem = function(form, callback, errorCallback) {
+  var addItemFromForm = function(form, callback, errorCallback) {
     var params = {
       type: 'POST',
       url: '/cart/add.js',
@@ -236,7 +236,7 @@ var myShop = (function($) {
         evt.preventDefault();
         $('.quantity-error').remove();
         setAddButtonState('disabled', 'Adding to cart');
-        addItem(evt.target, itemAddedCallback, itemErrorCallback);
+        addItemFromForm(evt.target, itemAddedCallback, itemErrorCallback);
       });
     }
   };
