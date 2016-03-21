@@ -7,6 +7,14 @@
   {% assign on_sale = true %}
 {% endif %}
 
+{% comment %}
+  Is this product sold out?
+{% endcomment %}
+{% asign sold_out = true %}
+{% if product.available %}
+  {% assign sold_out = false %}
+{% endif %}
+
   <div class="col-xs-6 col-sm-4 col-md-3 col-lg-3">
     <div class="product">
       <a href="{{ product.url }}" class="product-image-wrapper">
