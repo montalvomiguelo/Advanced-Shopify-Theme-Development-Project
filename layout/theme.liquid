@@ -24,7 +24,7 @@
         <div class="row">
           <div class="col-sm-6 col-sm-push-6">
             <ul class="navbar-cart-link">
-              <li><a href="/cart">Cart ({{ cart.total_price | money }})</a></li>
+              <li><a href="/cart">Cart: <span id="cart-count">{{ cart.item_count }}</span> / <span id="cart-price">{{ cart.total_price | money }}</span></a></li>
             </ul>
           </div>
           <div class="col-sm-6 col-sm-pull-6">
