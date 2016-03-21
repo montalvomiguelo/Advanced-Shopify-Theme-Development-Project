@@ -328,6 +328,20 @@ select {
   }
 }
 
+note, .errors {
+  border: 1px solid transparent;
+  font-size: 0.9em;
+  margin: $phi*1em 0;
+  padding: $phi*.5em $phi*1em;
+  text-align: center;
+}
+
+.form-error, .errors {
+  background-color: #fff6f6;
+  border-color: #d02e2e;
+  color: #d02e2e;
+}
+
 /* Override Bootstrap's default container.*/
 @media (min-width: 1200px) {
   .container {
