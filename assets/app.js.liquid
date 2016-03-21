@@ -201,8 +201,8 @@ var myShop = (function($) {
     alert('There are now ' + cart.item_count + ' items in the cart.');
   };
 
-  var onItemAdded = function(line_item) {
-    alert(line_item.title + ' was added to your shopping cart.');
+  var onItemAdded = function(lineItem) {
+    alert(lineItem.title + ' was added to your shopping cart.');
   };
 
   var addItemFromForm = function(form, callback, errorCallback) {
@@ -211,12 +211,12 @@ var myShop = (function($) {
       url: '/cart/add.js',
       data: $(form).serialize(),
       dataType: 'json',
-      success: function(line_item) {
+      success: function(lineItem) {
         if ((typeof callback) === 'function') {
-          callback(line_item, form);
+          callback(lineItem, form);
         }
         else {
-          onItemAdded(line_item);
+          onItemAdded(lineItem);
         }
       },
       error: function(XMLHttpRequest, textStatus) {
@@ -253,7 +253,7 @@ var myShop = (function($) {
     }
   };
 
-  var itemAddedCallback = function(line_item) {
+  var itemAddedCallback = function(lineItem) {
     setAddButtonState('enabled', 'Add to cart');
     getCart(cartUpdate);
   };
