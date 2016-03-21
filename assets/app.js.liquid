@@ -45,6 +45,7 @@ var myShop = (function($) {
     updateCollection();
     ajaxfyCollectionPage();
     ajaxfyCart();
+    quickAdd();
   };
 
   var switchImage = function(src, imgObject, el) {
@@ -231,6 +232,33 @@ var myShop = (function($) {
     $.ajax(params);
   };
 
+  var addItem = function(variantId, quantity, callback, errorCallback) {
+    var quantity = quantity || 1;
+    var params = {
+      type: 'POST',
+      url: '/cart/add.js',
+      data: 'quantity=' + quantity + '&id=' + variantId,
+      dataType: 'json',
+      success: function(line_item) {
+        if ((typeof callback) === 'function') {
+          callback(line_item);
+        }
+        else {
+          onItemAdded(line_item);
+        }
+      },
+      error: function(XMLHttpRequest, textStatus) {
+        if ((typeof errorCallback) === 'function') {
+          errorCallback(XMLHttpRequest, textStatus);
+        }
+        else {
+          onError(XMLHttpRequest, textStatus);
+        }
+      }
+    };
+    $.ajax(params);
+  };
+
   var getCart = function(callback) {
     $.getJSON('/cart.js', function (cart, textStatus) {
       if ((typeof callback) === 'function') {
@@ -251,6 +279,14 @@ var myShop = (function($) {
         addItemFromForm(evt.target, itemAddedCallback, itemErrorCallback);
       });
     }
+  };
+
+  var quickAdd = function() {
+    cache.$document.on('click', '[data-quick-add]', function(evt) {
+      evt.preventDefault();
+      var variantId = $(this).data('quick-add');
+      addItem(variantId);
+    });
   };
 
   var itemAddedCallback = function(lineItem) {
