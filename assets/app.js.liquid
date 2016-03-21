@@ -21,7 +21,7 @@ var myShop = (function($) {
     $swatchWapper: $('.swatch-wrapper'),
     $add: $('#add'),
     $productPrice: $('#product-price'),
-    $addToCartform: $('#add-to-cart-form'),
+    $addToCartForm: $('#add-to-cart-form'),
 
     // Cart page
     $cartRemove: $('[data-cart-remove]'),
@@ -30,6 +30,10 @@ var myShop = (function($) {
     // Collection page
     $updateCollection: $('[data-update-collection]'),
     $collectionForm: $('#collection-form'),
+
+    // Toolbar
+    $cartCount: $('#cart-count'),
+    $cartPrice: $('#cart-price')
 
   };
 
@@ -177,15 +181,83 @@ var myShop = (function($) {
 
     }
 
-  }
+  };
+
+  var addItem = function(form, callback, errorCallback) {
+    var params = {
+      type: 'POST',
+      url: '/cart/add.js',
+      data: $(form).serialize(),
+      dataType: 'json',
+      success: function(line_item) {
+        if ((typeof callback) === 'function') {
+          callback(line_item, form);
+        }
+        else {
+          alert(line_item.title + ' was added to your shopping cart.');
+        }
+      },
+      error: function(XMLHttpRequest, textStatus) {
+        if ((typeof errorCallback) === 'function') {
+          errorCallback(XMLHttpRequest, textStatus);
+        }
+        else {
+          // Shopify returns a description of the error in XMLHttpRequest.responseText.
+          // It is JSON.
+          // Example: {"description":"The product 'Amelia - Small' is already sold out.","status":500,"message":"Cart Error"}
+          var data = eval('(' + XMLHttpRequest.responseText + ')');
+          alert(data.message + '(' + data.status  + '): ' + data.description);
+        }
+      }
+    };
+    $.ajax(params);
+  };
+
+  var getCart = function(callback) {
+    $.getJSON('/cart.js', function (cart, textStatus) {
+      if ((typeof callback) === 'function') {
+        callback(cart);
+      }
+      else {
+        console.dir(cart);
+      }
+    });
+  };
 
   var ajaxfyCart = function() {
-    if (cache.$addToCartform.length) {
-      cache.$addToCartform.on('submit', function(evt) {
+    if (cache.$addToCartForm.length) {
+      cache.$addToCartForm.on('submit', function(evt) {
         evt.preventDefault();
-        console.log('Todo: Add to cart with ajax...');
+        $('.quantity-error').remove();
+        cache.$add.addClass('disabled').prop('disabled', true).text('Adding to cart');
+        addItem(evt.target, itemAddedCallback, itemErrorCallback);
       });
     }
+  };
+
+  var itemAddedCallback = function(line_item) {
+    cache.$add.removeClass('disabled').prop('disabled', false).text('Add to cart');
+    getCart(cartUpdate);
+  };
+
+  var itemErrorCallback = function(XMLHttpRequest, textStatus) {
+    var data = eval('(' + XMLHttpRequest.responseText + ')');
+    cache.$add.addClass('disabled').prop('disabled', true).text('Add to cart');
+
+    if (!!data.message) {
+      if (data.status == 422) {
+        cache.$addToCartForm.after('<div class="errors quantity-error">'+ data.description +'</div>')
+      }
+    }
+  };
+
+  var cartUpdate = function(cart) {
+    updateCountPrice(cart);
+  };
+
+  var updateCountPrice = function(cart) {
+    cache.$cartCount.text(cart.item_count);
+    cache.$cartPrice.text(Shopify.formatMoney(cart.total_price, ""));
   };
 
   return {
