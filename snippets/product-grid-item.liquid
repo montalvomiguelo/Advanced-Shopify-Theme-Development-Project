@@ -36,7 +36,7 @@
           {% if product.variants.size > 1 %}
             <a class="button button-small" href="{{ product.url }}">Select Options</a>
           {% else %}
-            <a class="button button-small" href="{{ product.url }}">Add to cart</a>
+            <a class="button button-small" href="{{ product.url }}" data-quick-add="{{ product.variants.first.id }}">Add to cart</a>
          {% endif %}
         {% endif %}
     </div>
