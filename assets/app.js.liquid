@@ -13,6 +13,7 @@ var myShop = (function($) {
   var cache = {
     // General
     $body: $('body'),
+    $document: $(document),
 
     // Product page
     $productThumbnails: $('#product-thumbnails'),
@@ -27,6 +28,7 @@ var myShop = (function($) {
 
     // Collection page
     $updateCollection: $('[data-update-collection]'),
+    $collectionForm: $('#collection-form'),
 
   };
 
@@ -36,6 +38,7 @@ var myShop = (function($) {
     productImageSwitch();
     productSwatchChange();
     updateCollection();
+    ajaxCollectionPage();
   };
 
   var switchImage = function(src, imgObject, el) {
@@ -141,11 +144,38 @@ var myShop = (function($) {
 
   var updateCollection = function() {
     if (cache.$updateCollection.length) {
-      cache.$updateCollection.change(function() {
+      cache.$document.on('change', '[data-update-collection]', function() {
         $(this).closest('form').submit();
       });
     }
   };
+
+  var ajaxCollectionPage = function() {
+
+    if (cache.$collectionForm.length) {
+
+      cache.$document.on('submit', '#collection-form', function(evt) {
+        evt.preventDefault();
+        var url = $(this).attr('action');
+        var data = $(this).serialize();
+        // Loading page fragment #content
+        $('#content').load(url + ' #content', data, function() {
+          // Add history entries and change the URL in the browser
+          window.history.pushState({}, null, url + '?' + data);
+        });
+      });
+
+      cache.$document.on('click', '.subcategories a', function(evt) {
+        evt.preventDefault();
+        var url = $(this).attr('href');
+        $('#content').load(url + ' #content', function() {
+          window.history.pushState({}, null, url);
+        });
+      });
+
+    }
+
+  }
 
   return {
     init: init,
