@@ -189,6 +189,22 @@ var myShop = (function($) {
 
   };
 
+  var onError = function(XMLHttpRequest, textStatus) {
+    // Shopify returns a description of the error in XMLHttpRequest.responseText.
+    // It is JSON.
+    // Example: {"description":"The product 'Amelia - Small' is already sold out.","status":500,"message":"Cart Error"}
+    var data = eval('(' + XMLHttpRequest.responseText + ')');
+    alert(data.message + '(' + data.status  + '): ' + data.description);
+  };
+
+  var onCartUpdate = function(cart) {
+    alert('There are now ' + cart.item_count + ' items in the cart.');
+  };
+
+  var onItemAdded = function(line_item) {
+    alert(line_item.title + ' was added to your shopping cart.');
+  };
+
   var addItemFromForm = function(form, callback, errorCallback) {
     var params = {
       type: 'POST',
@@ -200,7 +216,7 @@ var myShop = (function($) {
           callback(line_item, form);
         }
         else {
-          alert(line_item.title + ' was added to your shopping cart.');
+          onItemAdded(line_item);
         }
       },
       error: function(XMLHttpRequest, textStatus) {
@@ -208,11 +224,7 @@ var myShop = (function($) {
           errorCallback(XMLHttpRequest, textStatus);
         }
         else {
-          // Shopify returns a description of the error in XMLHttpRequest.responseText.
-          // It is JSON.
-          // Example: {"description":"The product 'Amelia - Small' is already sold out.","status":500,"message":"Cart Error"}
-          var data = eval('(' + XMLHttpRequest.responseText + ')');
-          alert(data.message + '(' + data.status  + '): ' + data.description);
+          onError(XMLHttpRequest, textStatus);
         }
       }
     };
@@ -225,7 +237,7 @@ var myShop = (function($) {
         callback(cart);
       }
       else {
-        console.dir(cart);
+        onCartUpdate(cart);
       }
     });
   };
