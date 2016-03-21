@@ -10,7 +10,7 @@
 {% comment %}
   Is this product sold out?
 {% endcomment %}
-{% asign sold_out = true %}
+{% assign sold_out = true %}
 {% if product.available %}
   {% assign sold_out = false %}
 {% endif %}
@@ -30,5 +30,14 @@
             <s>{{ product.compare_at_price | money }}</s>
           {% endif %}
         </p>
+        {% if sold_out %}
+          <a class="button button-small" href="{{ product.url }}">Sold Out</a>
+        {% else %}
+          {% if product.variants.size > 1 %}
+            <a class="button button-small" href="{{ product.url }}">Select Options</a>
+          {% else %}
+            <a class="button button-small" href="{{ product.url }}">Add to cart</a>
+         {% endif %}
+        {% endif %}
     </div>
   </div>
