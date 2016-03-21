@@ -21,6 +21,7 @@ var myShop = (function($) {
     $swatchWapper: $('.swatch-wrapper'),
     $add: $('#add'),
     $productPrice: $('#product-price'),
+    $addToCartform: $('#add-to-cart-form'),
 
     // Cart page
     $cartRemove: $('[data-cart-remove]'),
@@ -38,7 +39,8 @@ var myShop = (function($) {
     productImageSwitch();
     productSwatchChange();
     updateCollection();
-    ajaxCollectionPage();
+    ajaxfyCollectionPage();
+    ajaxfyCart();
   };
 
   var switchImage = function(src, imgObject, el) {
@@ -150,7 +152,7 @@ var myShop = (function($) {
     }
   };
 
-  var ajaxCollectionPage = function() {
+  var ajaxfyCollectionPage = function() {
 
     if (cache.$collectionForm.length) {
 
@@ -176,6 +178,15 @@ var myShop = (function($) {
     }
 
   }
+
+  var ajaxfyCart = function() {
+    if (cache.$addToCartform.length) {
+      cache.$addToCartform.on('submit', function(evt) {
+        evt.preventDefault();
+        console.log('Todo: Add to cart with ajax...');
+      });
+    }
+  };
 
   return {
     init: init,
