@@ -108,10 +108,10 @@ var myShop = (function($) {
 
       if (variant.available) {
         // Available, enable the submit button, change text
-        setAddButtonState('enabled', 'Add to cart');
+        setAddButtonState(cache.$add, 'enabled', 'Add to cart');
       } else {
         // Sold out, disable the submit button, change text
-        setAddButtonState('disabled', 'Sold out');
+        setAddButtonState(cache.$add, 'disabled', 'Sold out');
       }
 
       // Regardless of stock, update the product price and compare at price
@@ -130,7 +130,7 @@ var myShop = (function($) {
 
     } else {
       // Variant doesn't exist, disable submit button, change text
-      setAddButtonState('disabled', 'Unavailable');
+      setAddButtonState(cache.$add, 'disabled', 'Unavailable');
     }
 
     swatches(selector);
@@ -275,7 +275,7 @@ var myShop = (function($) {
       cache.$addToCartForm.on('submit', function(evt) {
         evt.preventDefault();
         $('.quantity-error').remove();
-        setAddButtonState('disabled', 'Adding to cart');
+        setAddButtonState(cache.$add, 'disabled', 'Adding to cart');
         addItemFromForm(evt.target, itemAddedCallback, itemErrorCallback);
       });
     }
@@ -290,13 +290,13 @@ var myShop = (function($) {
   };
 
   var itemAddedCallback = function(lineItem) {
-    setAddButtonState('enabled', 'Add to cart');
+    setAddButtonState(cache.$add, 'enabled', 'Add to cart');
     getCart(cartUpdate);
   };
 
   var itemErrorCallback = function(XMLHttpRequest, textStatus) {
     var data = eval('(' + XMLHttpRequest.responseText + ')');
-    setAddButtonState('disabled', 'Add to cart');
+    setAddButtonState(cache.$add, 'disabled', 'Add to cart');
 
     if (!!data.message) {
       if (data.status == 422) {
@@ -314,11 +314,11 @@ var myShop = (function($) {
     cache.$cartPrice.text(Shopify.formatMoney(cart.total_price, ""));
   };
 
-  var setAddButtonState = function(state, text) {
+  var setAddButtonState = function(ele, state, text) {
     if (state == 'disabled') {
-      cache.$add.addClass('disabled').prop('disabled', true).text(text);
+      $(ele).addClass('disabled').prop('disabled', true).text(text);
     } else if (state == 'enabled') {
-      cache.$add.removeClass('disabled').prop('disabled', false).text(text);
+      $(ele).removeClass('disabled').prop('disabled', false).text(text);
     }
   };
 
