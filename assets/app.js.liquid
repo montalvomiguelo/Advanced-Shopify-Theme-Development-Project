@@ -107,10 +107,10 @@ var myShop = (function($) {
 
       if (variant.available) {
         // Available, enable the submit button, change text
-        cache.$add.removeClass('disabled').prop('disabled', false).text('Add to cart');
+        setAddButtonState('enabled', 'Add to cart');
       } else {
         // Sold out, disable the submit button, change text
-        cache.$add.addClass('disabled').prop('disabled', true).text('Sold out');
+        setAddButtonState('disabled', 'Sold out');
       }
 
       // Regardless of stock, update the product price and compare at price
@@ -129,8 +129,14 @@ var myShop = (function($) {
 
     } else {
       // Variant doesn't exist, disable submit button, change text
-      cache.$add.addClass('disabled').prop('disabled', true).text('Unavailable');
+      setAddButtonState('disabled', 'Unavailable');
     }
+
+    swatches(selector);
+
+  };
+
+  var swatches = function(selector) {
 
     // BEGIN SWATCHES
     var $form = jQuery('#' + selector.domIdPrefix).closest('form');
@@ -229,20 +235,20 @@ var myShop = (function($) {
       cache.$addToCartForm.on('submit', function(evt) {
         evt.preventDefault();
         $('.quantity-error').remove();
-        cache.$add.addClass('disabled').prop('disabled', true).text('Adding to cart');
+        setAddButtonState('disabled', 'Adding to cart');
         addItem(evt.target, itemAddedCallback, itemErrorCallback);
       });
     }
   };
 
   var itemAddedCallback = function(line_item) {
-    cache.$add.removeClass('disabled').prop('disabled', false).text('Add to cart');
+    setAddButtonState('enabled', 'Add to cart');
     getCart(cartUpdate);
   };
 
   var itemErrorCallback = function(XMLHttpRequest, textStatus) {
     var data = eval('(' + XMLHttpRequest.responseText + ')');
-    cache.$add.addClass('disabled').prop('disabled', true).text('Add to cart');
+    setAddButtonState('disabled', 'Add to cart');
 
     if (!!data.message) {
       if (data.status == 422) {
@@ -258,6 +264,14 @@ var myShop = (function($) {
   var updateCountPrice = function(cart) {
     cache.$cartCount.text(cart.item_count);
     cache.$cartPrice.text(Shopify.formatMoney(cart.total_price, ""));
+  };
+
+  var setAddButtonState = function(state, text) {
+    if (state == 'disabled') {
+      cache.$add.addClass('disabled').prop('disabled', true).text(text);
+    } else if (state == 'enabled') {
+      cache.$add.removeClass('disabled').prop('disabled', false).text(text);
+    }
   };
 
   return {
