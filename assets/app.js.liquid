@@ -156,7 +156,7 @@ var myShop = (function($) {
 
       cache.$document.on('submit', '#collection-form', function(evt) {
         evt.preventDefault();
-        var url = $(this).attr('action');
+        var url = location.href.split('?')[0];
         var data = $(this).serialize();
         // Loading page fragment #content
         $('#content').load(url + ' #content', data, function() {
