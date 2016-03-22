@@ -38,6 +38,14 @@ html, body {
   background-color: $body-bg-color;
 }
 
+a {
+  color: $button-bg-color;
+  &:hover,
+  &:focus {
+    color: darken($button-bg-color, 15%);
+  }
+}
+
 .row-space {
   margin-bottom: 30px;
 }
@@ -96,6 +104,12 @@ html, body {
   vertical-align: middle;
   line-height: 1.375;
   font-family: $font-family-body;
+  &:hover,
+  &:focus {
+    background: darken($button-bg-color, 10%);
+    color: $button-color;
+    text-decoration: none;
+  }
 }
 
 .button-small {
@@ -106,6 +120,11 @@ html, body {
 .button-default {
   background-color: white;
   color: black;
+  &:hover,
+  &:focus {
+    background: darken(white, 10%);
+    color: black;
+  }
 }
 
 
