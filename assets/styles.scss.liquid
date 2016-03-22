@@ -46,6 +46,22 @@ a {
   }
 }
 
+/* Text inputs. */
+%input {
+  display: inline-block;
+  max-width: 100%;
+  padding: .4em .6em;
+  background-color: transparent;
+  border: $text-color 1px solid;
+  border-radius: 0;
+  outline: none;
+  -webkit-appearance: none;
+}
+
+textarea, input[type="text"], input[type="email"], input[type="url"], input[type="tel"], input[type="date"], input[type="search"], input[type="number"], input[type="password"] {
+  @extend %input;
+}
+
 .row-space {
   margin-bottom: 30px;
 }
