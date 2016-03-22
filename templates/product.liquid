@@ -44,11 +44,11 @@
         </select>
 
         <!-- Variant swatches. -->
-        {% if product.variants.size > 1 %}
+        {%  unless product.variants.first.title contains 'Default' %}
           {% for option in product.options %}
             {% include 'swatch' with option %}
           {% endfor %}
-        {% endif %}
+        {% endunless %}
 
         <p class="text-center">
           <button type="submit" id="add" class="button">Add to cart</button>
