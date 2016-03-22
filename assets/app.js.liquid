@@ -239,12 +239,12 @@ var myShop = (function($) {
       url: '/cart/add.js',
       data: 'quantity=' + quantity + '&id=' + variantId,
       dataType: 'json',
-      success: function(line_item) {
+      success: function(lineItem) {
         if ((typeof callback) === 'function') {
-          callback(line_item);
+          callback(lineItem);
         }
         else {
-          onItemAdded(line_item);
+          onItemAdded(lineItem);
         }
       },
       error: function(XMLHttpRequest, textStatus) {
@@ -281,14 +281,6 @@ var myShop = (function($) {
     }
   };
 
-  var quickAdd = function() {
-    cache.$document.on('click', '[data-quick-add]', function(evt) {
-      evt.preventDefault();
-      var variantId = $(this).data('quick-add');
-      addItem(variantId);
-    });
-  };
-
   var itemAddedCallback = function(lineItem) {
     setAddButtonState(cache.$add, 'enabled', 'Add to cart');
     getCart(cartUpdate);
@@ -296,11 +288,14 @@ var myShop = (function($) {
 
   var itemErrorCallback = function(XMLHttpRequest, textStatus) {
     var data = eval('(' + XMLHttpRequest.responseText + ')');
-    setAddButtonState(cache.$add, 'disabled', 'Add to cart');
+    setAddButtonState(cache.$add, 'enabled', 'Add to cart');
+    printQuantityError(data, cache.$addToCartForm);
+  };
 
+  var printQuantityError = function(data, ele) {
     if (!!data.message) {
       if (data.status == 422) {
-        cache.$addToCartForm.after('<div class="errors quantity-error">'+ data.description +'</div>')
+        $(ele).after('<div class="errors quantity-error">'+ data.description +'</div>')
       }
     }
   };
@@ -312,6 +307,35 @@ var myShop = (function($) {
   var updateCountPrice = function(cart) {
     cache.$cartCount.text(cart.item_count);
     cache.$cartPrice.text(Shopify.formatMoney(cart.total_price, ""));
+  };
+
+  var quickAdd = function() {
+    cache.$document.on('click', '[data-quick-add]', function(evt) {
+      evt.preventDefault();
+      var variantId = $(this).data('quick-add');
+      var ele = this;
+      var quantity = 1;
+      $('.quantity-error').remove();
+      setAddButtonState(ele, 'disabled', 'Adding to cart');
+
+      addItem(variantId, quantity, function(lineItem) {
+        quickItemAddedCallback(lineItem, ele);
+      }, function(XMLHttpRequest, textStatus) {
+        quickItemErrorCallback(XMLHttpRequest, textStatus, ele);
+      });
+
+    });
+  };
+
+  var quickItemAddedCallback = function(lineItem, ele) {
+    setAddButtonState(ele, 'enabled', 'Add to cart');
+    getCart(cartUpdate);
+  };
+
+  var quickItemErrorCallback = function(XMLHttpRequest, textStatus, ele) {
+    var data = eval('(' + XMLHttpRequest.responseText + ')');
+    setAddButtonState(ele, 'enabled', 'Add to cart');
+    printQuantityError(data, ele);
   };
 
   var setAddButtonState = function(ele, state, text) {
