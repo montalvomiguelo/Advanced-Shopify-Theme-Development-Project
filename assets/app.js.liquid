@@ -26,6 +26,8 @@ var myShop = (function($) {
     // Cart page
     $cartRemove: $('[data-cart-remove]'),
     $cartForm: $('#cart-form'),
+    $cartModal: $('#cart-modal'),
+    $cartContainer: $('#cart-container'),
 
     // Collection page
     $updateCollection: $('[data-update-collection]'),
@@ -33,7 +35,8 @@ var myShop = (function($) {
 
     // Toolbar
     $cartCount: $('#cart-count'),
-    $cartPrice: $('#cart-price')
+    $cartPrice: $('#cart-price'),
+    $cartLink: $('#cart-link')
 
   };
 
@@ -46,6 +49,8 @@ var myShop = (function($) {
     ajaxfyCollectionPage();
     ajaxfyCart();
     quickAdd();
+    loadCart();
+    adjustCart();
   };
 
   var switchImage = function(src, imgObject, el) {
@@ -259,6 +264,48 @@ var myShop = (function($) {
     $.ajax(params);
   };
 
+  var changeItem = function(variant_id, quantity, callback) {
+    var params = {
+      type: 'POST',
+      url: '/cart/change.js',
+      data:  'quantity='+quantity+'&id='+variant_id,
+      dataType: 'json',
+      success: function(cart) {
+        if ((typeof callback) === 'function') {
+          callback(cart);
+        }
+        else {
+          onCartUpdate(cart);
+        }
+      },
+      error: function(XMLHttpRequest, textStatus) {
+        onError(XMLHttpRequest, textStatus);
+      }
+    };
+    $.ajax(params);
+  };
+
+  var removeItem = function(variant_id, callback) {
+    var params = {
+      type: 'POST',
+      url: '/cart/change.js',
+      data:  'quantity=0&id='+variant_id,
+      dataType: 'json',
+      success: function(cart) {
+        if ((typeof callback) === 'function') {
+          callback(cart);
+        }
+        else {
+          onCartUpdate(cart);
+        }
+      },
+      error: function(XMLHttpRequest, textStatus) {
+        onError(XMLHttpRequest, textStatus);
+      }
+    };
+    $.ajax(params);
+  };
+
   var getCart = function(callback) {
     $.getJSON('/cart.js', function (cart, textStatus) {
       if ((typeof callback) === 'function') {
@@ -302,11 +349,69 @@ var myShop = (function($) {
 
   var cartUpdate = function(cart) {
     updateCountPrice(cart);
+    buildCart(cart);
+    openCart();
   };
 
   var updateCountPrice = function(cart) {
     cache.$cartCount.text(cart.item_count);
     cache.$cartPrice.text(Shopify.formatMoney(cart.total_price, ""));
+  };
+
+  var buildCart = function(cart) {
+
+    // Start with a fresh cart div
+    cache.$cartContainer.empty();
+
+    // Empty cart message
+    if (cart.item_count == 0) {
+    cache.$cartContainer.html('<div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button><h4>Your cart is empty</h4></div><div class="modal-body"><p>Continue shopping</p></div>');
+    } else {
+      var source = $('#cart-template').html();
+      var template = Handlebars.compile(source);
+
+      var items = [];
+
+      // Add each item to context
+      $.each(cart.items, function(index, lineItem) {
+
+      var item = {
+        id: lineItem.id,
+        url: lineItem.url,
+        image: getProdImg(lineItem.image),
+        title: lineItem.title,
+        line_price: Shopify.formatMoney(lineItem.line_price,''),
+        quantity: lineItem.quantity
+      };
+
+      items.push(item);
+
+      });
+
+      // Context
+      var data = {
+        items: items,
+        totalPrice: Shopify.formatMoney(cart.total_price,'')
+      };
+
+      cache.$cartContainer.html(template(data));
+
+    }
+
+  };
+
+  var openCart = function() {
+    cache.$cartModal.modal('show');
+  };
+
+  var getProdImg = function(image) {
+
+    if (image) {
+      return image.replace(/(\.[^.]*)$/, "_small$1").replace('http:', '');
+    }
+
+    return '//cdn.shopify.com/s/assets/admin/no-image-medium-cc9732cb976dd349a0df1d39816fbcc7.gif';
+
   };
 
   var quickAdd = function() {
@@ -344,6 +449,30 @@ var myShop = (function($) {
     } else if (state == 'enabled') {
       $(ele).removeClass('disabled').prop('disabled', false).text(text);
     }
+  };
+
+  var loadCart = function() {
+    cache.$cartLink.on('click', function(evt) {
+      evt.preventDefault();
+      getCart(buildCart);
+      openCart();
+    });
+  };
+
+  var adjustCart = function() {
+    cache.$document.on('change', '.quantity-num', function() {
+      debugger;
+      var variantId = $(this).data('id');
+      var quantity = parseInt($(this).val(), 10);
+      changeItem(variantId, quantity, cartUpdate);
+    });
+
+    cache.$document.on('click', '[data-remove-id]', function(evt) {
+      evt.preventDefault();
+      var variantId = $(this).data('remove-id');
+      removeItem(variantId, cartUpdate);
+    });
+
   };
 
   return {
