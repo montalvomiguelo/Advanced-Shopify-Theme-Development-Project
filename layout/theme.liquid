@@ -96,8 +96,7 @@
       {% endraw %}
     </script>
 
-    {{ 'bootstrap-custom.js' | asset_url | script_tag }}
-    {{ 'handlebars-v4.0.5.js' |asset_url | script_tag }}
+    {{ 'vendors.js' |asset_url | script_tag }}
     {{ 'app.js' | asset_url | script_tag }}
   </body>
 </html>
