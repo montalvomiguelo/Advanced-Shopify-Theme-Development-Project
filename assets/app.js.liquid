@@ -130,7 +130,7 @@ var myShop = (function($) {
       if (variant.featured_image) {
         var newImg = variant.featured_image;
         var el = cache.$productImage[0];
-        Shopify.Image.switchImage(newImg, el, myShop.switchImage);
+        Shopify.Image.switchImage(newImg, el, switchImage);
       }
 
     } else {
@@ -477,7 +477,6 @@ var myShop = (function($) {
 
   return {
     init: init,
-    switchImage: switchImage,
     productPage: productPage
   };
 
