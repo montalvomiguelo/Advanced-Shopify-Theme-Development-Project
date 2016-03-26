@@ -1,0 +1,22 @@
+{
+  "name": "montalvomigueloproject",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/montalvomiguelo/Advanced-Shopify-Theme-Development-Project.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/montalvomiguelo/Advanced-Shopify-Theme-Development-Project/issues"
+  },
+  "homepage": "https://github.com/montalvomiguelo/Advanced-Shopify-Theme-Development-Project#readme",
+  "devDependencies": {
+    "grunt-contrib-concat": "^1.0.0"
+  }
+}
